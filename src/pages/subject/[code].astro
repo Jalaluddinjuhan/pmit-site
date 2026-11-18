@@ -2,18 +2,21 @@
 import Base from '../../layouts/Base.astro';
 import { subjects, teachers, trimesters, exams } from '../../data/courses';
 import { getResources } from '../../data/resources';
+import { getFiles } from '../../data/files';
 export function getStaticPaths() {
   return subjects.map((s) => ({ params: { code: s.code }, props: { s } }));
 }
 const { s } = Astro.props;
 const t = trimesters.find((x) => x.id === s.trimester)!;
 const r = getResources(s.code);
+const f = getFiles(s.trimester, s.code);
 const exam = exams.find((e) => e.codes.includes(s.code));
 const sections = [
-  { key: 'lectures', label: 'Lectures', items: r.lectures },
-  { key: 'documents', label: 'Important documents', items: r.documents },
-  { key: 'others', label: 'Others', items: r.others },
+  { key: 'lectures', label: 'Lectures', items: r.lectures, groups: f.lectures, folder: '' },
+  { key: 'documents', label: 'Important documents', items: r.documents, groups: f.documents, folder: 'documents/' },
+  { key: 'others', label: 'Others', items: r.others, groups: f.others, folder: 'others/' },
 ] as const;
+const weekDir = `public/files/t${s.trimester}/${s.code}/<week folder>/`;
 ---
 <Base title={`${s.code} ${s.title}`}>
   <p class="crumb"><a href="/">Home</a> / <a href={`/trimester/${t.id}`}>{t.name}</a> / {s.code}</p>
@@ -31,18 +34,40 @@ const sections = [
     {sections.map((sec) => (
       <section>
         <h2>{sec.label}</h2>
-        {sec.items.length === 0 ? (
-          <div class="empty">Nothing here yet. Add items to <code>src/data/resources/{s.code}.json</code> under <code>{sec.key}</code>.</div>
+        {sec.items.length === 0 && sec.groups.length === 0 ? (
+          <div class="empty">Nothing here yet. Put files in <code>{weekDir}{sec.folder}</code> or add links to <code>src/data/resources/{s.code}.json</code>.</div>
         ) : (
-          <ul class="clean card">
-            {sec.items.map((i) => (
-              <li>
-                <a href={i.url} target="_blank" rel="noopener">{i.title}</a>
-                {i.date && <span class="crumb"> · {i.date}</span>}
-                {i.note && <div class="crumb">{i.note}</div>}
-              </li>
+          <>
+            {sec.groups.map((g) => (
+              <div class="card week">
+                <h3>{g.week}</h3>
+                <ul class="clean">
+                  {g.files.map((i) => (
+                    <li class="file">
+                      <span class="ext">{i.ext}</span>
+                      <a href={i.url} target="_blank" rel="noopener">{i.name}</a>
+                      <span class="crumb">{i.size}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+            {sec.items.length > 0 && (
+              <div class="card week">
+                <h3>Links</h3>
+                <ul class="clean">
+                  {sec.items.map((i) => (
+                    <li class="file">
+                      <span class="ext">LINK</span>
+                      <a href={i.url} target="_blank" rel="noopener">{i.title}</a>
+                      {i.date && <span class="crumb">{i.date}</span>}
+                      {i.note && <div class="crumb">{i.note}</div>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
         )}
       </section>
     ))}

@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { trimesters, subjects, teachers } from '../../data/courses';
 import { getResources } from '../../data/resources';
+import { getFiles } from '../../data/files';
 export function getStaticPaths() {
   return trimesters.map((t) => ({ params: { id: String(t.id) }, props: { t } }));
 }
@@ -15,7 +16,7 @@ const list = subjects.filter((s) => s.trimester === t.id);
   <div class="grid">
     {list.map((s) => {
       const r = getResources(s.code);
-      const n = r.lectures.length + r.documents.length + r.others.length;
+      const n = r.lectures.length + r.documents.length + r.others.length + getFiles(s.trimester, s.code).total;
       return (
         <a class="card" href={`/subject/${s.code}`}>
           <span class="code">{s.code}</span>
