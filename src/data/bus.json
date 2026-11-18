@@ -1,0 +1,6 @@
+{
+  "_help": "Fill from the official bus schedule notice. Each route: name, direction, times[].",
+  "sourceUrl": "https://pmit.iitju.edu.bd/all-notices",
+  "updated": "",
+  "routes": []
+}

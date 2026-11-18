@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import { trimesters, subjects, teachers } from '../../data/courses';
+import { getResources } from '../../data/resources';
+export function getStaticPaths() {
+  return trimesters.map((t) => ({ params: { id: String(t.id) }, props: { t } }));
+}
+const { t } = Astro.props;
+const list = subjects.filter((s) => s.trimester === t.id);
+---
+<Base title={t.name}>
+  <p class="crumb"><a href="/">Home</a> / {t.name}</p>
+  <h1>{t.name}</h1>
+  <p class="lead">{t.blurb}</p>
+  <div class="grid">
+    {list.map((s) => {
+      const r = getResources(s.code);
+      const n = r.lectures.length + r.documents.length + r.others.length;
+      return (
+        <a class="card" href={`/subject/${s.code}`}>
+          <span class="code">{s.code}</span>
+          <h3>{s.title}</h3>
+          <div class="meta">
+            <span><b>{s.teacher}</b> · {teachers[s.teacher]}</span>
+          </div>
+          <p>{s.slot} · {s.room}</p>
+          <p><span class="tag">Group {s.group}</span><span class="tag">{n} resources</span></p>
+        </a>
+      );
+    })}
+  </div>
+</Base>

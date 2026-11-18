@@ -1,0 +1,48 @@
+---
+import { program, trimesters } from '../data/courses';
+interface Props { title?: string; }
+const { title } = Astro.props;
+const pageTitle = title ? `${title} · PMIT Fall 2026` : 'PMIT Fall 2026 · Friday Batch';
+const path = Astro.url.pathname;
+const links = [
+  { href: '/routine', label: 'Routine' },
+  { href: '/exams', label: 'Exams' },
+  { href: '/notices', label: 'Notices' },
+  { href: '/bus', label: 'Bus' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content="PMIT, IIT Jahangirnagar University — Fall 2026 Friday batch: trimesters, subjects, lectures, notices and bus schedule." />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap bar">
+        <a class="brand" href="/">PMIT <span>Fall 2026</span></a>
+        <nav>
+          {trimesters.map((t) => (
+            <a href={`/trimester/${t.id}`} class:list={[{ active: path.startsWith(`/trimester/${t.id}`) }]}>T{t.id}</a>
+          ))}
+          <span class="sep"></span>
+          {links.map((l) => (
+            <a href={l.href} class:list={[{ active: path.startsWith(l.href) }]}>{l.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="wrap foot">
+      <p>
+        Unofficial student site for the {program.batch}. Always check the
+        <a href={program.officialNotices} target="_blank" rel="noopener">official notices</a> for the final word.
+      </p>
+    </footer>
+  </body>
+</html>

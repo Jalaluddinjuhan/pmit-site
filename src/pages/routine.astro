@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { program, routine, teachers, subjectByCode } from '../data/courses';
+---
+<Base title="Class routine">
+  <p class="crumb"><a href="/">Home</a> / Routine</p>
+  <h1>Class routine — Fall Trimester 2026</h1>
+  <p class="lead">Friday batch, Section-A. Active from {program.routineActiveFrom}.</p>
+  {routine.map((tr) => (
+    <section>
+      <h2>Trimester {['I', 'II', 'III'][tr.trimester - 1]}</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Time</th><th>Course</th><th>Teacher</th><th>Room</th></tr></thead>
+          <tbody>
+            {tr.rows.map((r) => (
+              <tr>
+                <td>{r.slot}</td>
+                <td><a href={`/subject/${r.code}`}>{r.code}</a> — {subjectByCode(r.code)?.title}</td>
+                <td>{teachers[r.teacher]} ({r.teacher})</td>
+                <td>{r.room}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))}
+  <p class="note">Trimester III is split into groups G-01 and G-02 in the routine. Check which group you are in.</p>
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { program } from '../data/courses';
+import data from '../data/notices.json';
+const list = data.notices as { title: string; date: string; url: string; type?: string }[];
+---
+<Base title="Notices">
+  <p class="crumb"><a href="/">Home</a> / Notices</p>
+  <h1>Notices — Friday batch, Fall 2026</h1>
+  <p class="lead">Only notices that apply to this batch. The full list is on the official site.</p>
+  <p><a class="btn" href={program.officialNotices} target="_blank" rel="noopener">Open official notice board</a></p>
+  {list.length === 0 ? (
+    <div class="empty" style="margin-top:16px">
+      No notices added yet. Add them to <code>src/data/notices.json</code> as
+      <code>{`{ "title": "...", "date": "2026-11-13", "url": "...", "type": "notice" }`}</code>, newest first.
+    </div>
+  ) : (
+    <ul class="clean card" style="margin-top:16px">
+      {list.map((n) => (
+        <li>
+          <a href={n.url} target="_blank" rel="noopener">{n.title}</a>
+          {n.type && <span class="tag" style="margin-left:8px">{n.type}</span>}
+          <div class="crumb">{n.date}</div>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

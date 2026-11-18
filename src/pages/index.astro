@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import { program, trimesters, subjects, routine, teachers, subjectByCode } from '../data/courses';
+import notices from '../data/notices.json';
+const latest = (notices.notices as any[]).slice(0, 3);
+---
+<Base>
+  <p class="crumb">{program.institute}</p>
+  <h1>{program.name}</h1>
+  <p class="lead">{program.batch}</p>
+  <div class="meta">
+    <span><b>Duration:</b> {program.duration}</span>
+    <span><b>Structure:</b> {program.structure}</span>
+    <span><b>Classes:</b> {program.classDay}s, routine active from {program.routineActiveFrom}</span>
+  </div>
+
+  <h2>Trimesters</h2>
+  <div class="grid">
+    {trimesters.map((t) => (
+      <a class="card" href={`/trimester/${t.id}`}>
+        <h3>{t.name}</h3>
+        <p>{t.blurb}</p>
+        <p>{subjects.filter((s) => s.trimester === t.id).length} subjects</p>
+      </a>
+    ))}
+  </div>
+
+  <h2>Quick links</h2>
+  <div class="grid">
+    <a class="card" href="/routine"><h3>Class routine</h3><p>Friday slots, rooms and teachers for Section-A.</p></a>
+    <a class="card" href="/exams"><h3>Exam schedule</h3><p>Semester final exam dates by subject.</p></a>
+    <a class="card" href="/notices"><h3>Notices</h3><p>Friday batch Fall 2026 notices and official link.</p></a>
+    <a class="card" href="/bus"><h3>Bus schedule</h3><p>University bus timings.</p></a>
+  </div>
+
+  <h2>Latest notices</h2>
+  {latest.length === 0 ? (
+    <div class="empty">
+      No notices added yet. Check the <a href={program.officialNotices} target="_blank" rel="noopener">official notice board</a>,
+      then add items to <code>src/data/notices.json</code>.
+    </div>
+  ) : (
+    <ul class="clean card">
+      {latest.map((n) => (
+        <li><a href={n.url} target="_blank" rel="noopener">{n.title}</a><br /><span class="crumb">{n.date}</span></li>
+      ))}
+    </ul>
+  )}
+</Base>

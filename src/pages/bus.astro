@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import data from '../data/bus.json';
+const routes = data.routes as { name: string; direction?: string; times: string[] }[];
+---
+<Base title="Bus schedule">
+  <p class="crumb"><a href="/">Home</a> / Bus</p>
+  <h1>Bus schedule</h1>
+  <p class="lead">{data.updated ? `Last updated ${data.updated}` : 'Not filled in yet.'}</p>
+  {routes.length === 0 ? (
+    <div class="empty">
+      Add the bus routes and times from the official notice to <code>src/data/bus.json</code>.
+      Official source: <a href={data.sourceUrl} target="_blank" rel="noopener">PMIT notices</a>.
+    </div>
+  ) : (
+    <div class="grid">
+      {routes.map((r) => (
+        <div class="card">
+          <h3>{r.name}</h3>
+          {r.direction && <p>{r.direction}</p>}
+          <p>{r.times.join(' · ')}</p>
+        </div>
+      ))}
+    </div>
+  )}
+</Base>

@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import { subjects, teachers, trimesters, exams } from '../../data/courses';
+import { getResources } from '../../data/resources';
+export function getStaticPaths() {
+  return subjects.map((s) => ({ params: { code: s.code }, props: { s } }));
+}
+const { s } = Astro.props;
+const t = trimesters.find((x) => x.id === s.trimester)!;
+const r = getResources(s.code);
+const exam = exams.find((e) => e.codes.includes(s.code));
+const sections = [
+  { key: 'lectures', label: 'Lectures', items: r.lectures },
+  { key: 'documents', label: 'Important documents', items: r.documents },
+  { key: 'others', label: 'Others', items: r.others },
+] as const;
+---
+<Base title={`${s.code} ${s.title}`}>
+  <p class="crumb"><a href="/">Home</a> / <a href={`/trimester/${t.id}`}>{t.name}</a> / {s.code}</p>
+  <span class="code">{s.code}</span>
+  <h1>{s.title}</h1>
+  <div class="meta">
+    <span><b>Teacher:</b> {teachers[s.teacher]} ({s.teacher})</span>
+    <span><b>Class:</b> Friday, {s.slot}</span>
+    <span><b>Room:</b> {s.room}</span>
+    <span><b>Credits:</b> {s.credits}</span>
+    {exam && <span><b>Final exam:</b> {exam.date}</span>}
+  </div>
+
+  <div class="cols">
+    {sections.map((sec) => (
+      <section>
+        <h2>{sec.label}</h2>
+        {sec.items.length === 0 ? (
+          <div class="empty">Nothing here yet. Add items to <code>src/data/resources/{s.code}.json</code> under <code>{sec.key}</code>.</div>
+        ) : (
+          <ul class="clean card">
+            {sec.items.map((i) => (
+              <li>
+                <a href={i.url} target="_blank" rel="noopener">{i.title}</a>
+                {i.date && <span class="crumb"> · {i.date}</span>}
+                {i.note && <div class="crumb">{i.note}</div>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    ))}
+  </div>
+
+  <h2>Syllabus topics</h2>
+  <ul class="bullets">{s.topics.map((x) => <li>{x}</li>)}</ul>
+
+  <h2>Text &amp; reference books</h2>
+  <ul class="bullets">{s.books.map((x) => <li>{x}</li>)}</ul>
+</Base>
