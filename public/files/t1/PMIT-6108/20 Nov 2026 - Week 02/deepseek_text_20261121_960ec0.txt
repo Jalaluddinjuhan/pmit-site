@@ -1,0 +1,18 @@
++-----------------------------------------------------------------------+
+|                    STRATEGIC MANAGEMENT (DSS)                         |
+|   Unstructured Decisions: Revenue Forecasting, Policy & Expansion     |
++-----------------------------------------------------------------------+
+                                   ^
+                                   | (Aggregated MIS Summaries)
++-----------------------------------------------------------------------+
+|                    TACTICAL MANAGEMENT (MIS)                          |
+|   Semi-Structured Decisions: SR/MTI/PISMI Approvals, Holding Tax Rpt  |
++-----------------------------------------------------------------------+
+                                   ^
+                                   | (Daily Transaction Logs)
++-----------------------------------------------------------------------+
+|                   OPERATIONAL MANAGEMENT (TPS)                        |
+|   Structured Decisions: Invoices, Surcharges, Depot SR, Dues Logs     |
++-----------------------------------------------------------------------+
+         ^                 ^                 ^                 ^
+     [People]         [Hardware]        [Software]      [Data & Rules]
