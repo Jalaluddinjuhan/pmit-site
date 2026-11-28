@@ -1,0 +1,4 @@
+1. What is data mining? Discuss about descriptive and predictive data mining with example.
+2. Why is data mining important over Statistrics.
+3.  Challenges of Data MIning: Purity, Dimentionality, stream data, heteroginity, privacy, ownership, scalability.
+4. Different task or techniques of Data mining: Classification, clustering, regression, association rule, sec. pattern, abnormality
